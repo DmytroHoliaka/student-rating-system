@@ -44,7 +44,18 @@ void Student::printStudent()
 
 void Table::sortStudents(parseData& data)
 {
-	std::cout << "From Table::sortStudents()" << std::endl;
+	for (int i = 0; i < data.totalLine - 1; ++i)
+	{
+		int j = i + 1;
+
+		while (j > 0 && (data.students[j]->getAvgScore()) > (data.students[j - 1]->getAvgScore()))
+		{
+			Student* temp = data.students[j - 1];
+			data.students[j - 1] = data.students[j];
+			data.students[j] = temp;
+			--j;
+		}
+	}
 }
 
 
@@ -133,10 +144,10 @@ void parseData::parseStudentInfo(std::istream& input)
 
 	std::getline(input, line);
 	std::istringstream is(line);
-	
+
 	std::string word;
 	std::getline(is, word, ',');
-	
+
 	students[index - 1]->setName(word);
 
 	int count = 0;

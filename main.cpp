@@ -10,8 +10,10 @@ int main()
     data.getFilesFromDirectory();
     data.showFiles();
     data.getStudentsInfo();
-    
+    //data.printStudents();
+
+    Table table;
+    table.sortStudents(data);
+
     data.printStudents();
 }
-
-// Добавляю функцію виведення всіх елементів students

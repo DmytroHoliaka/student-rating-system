@@ -78,10 +78,11 @@ public:
 
 class parseData : public inputData
 {
+	friend void Table::sortStudents(parseData&);
 private:
-	std::string fileName;
 	int lineCount;
 	int totalLine;
+	std::string fileName;
 	std::vector<Student*> students;
 	void parseStudentInfo(std::istream&);
 
