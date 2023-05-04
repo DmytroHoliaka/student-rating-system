@@ -42,6 +42,11 @@ void Student::printStudent()
 
 // ---------------------- Table ---------------------- 
 
+void Table::sortStudents(parseData& data)
+{
+	std::cout << "From Table::sortStudents()" << std::endl;
+}
+
 
 // ---------------------- inputData ---------------------- 
 
@@ -110,7 +115,10 @@ void parseData::getStudentsInfo()
 
 		input.close();
 	}
+}
 
+void parseData::printStudents()
+{
 	for (int i = 0; i < this->totalLine; ++i)
 		students[i]->printStudent();
 }
@@ -142,3 +150,4 @@ void parseData::parseStudentInfo(std::istream& input)
 	students[index - 1]->setAvgScore(sum / (double)count);
 	students[index - 1]->setBudgetPlace(word == "TRUE");
 }
+

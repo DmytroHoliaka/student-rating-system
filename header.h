@@ -11,6 +11,9 @@
 
 
 
+class inputData;
+class parseData;
+
 class Person
 {
 private: // private
@@ -48,7 +51,7 @@ private:
 
 public:
 	void calculateBudgetAmount();
-	void sortStudents();
+	void sortStudents(parseData&);
 	void calculateScolarshipAmount();
 	void calculateMinScolarshipScore();
 };
@@ -87,4 +90,5 @@ public:
 	parseData(std::string);
 
 	void getStudentsInfo();
+	void printStudents();
 };

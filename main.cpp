@@ -10,10 +10,8 @@ int main()
     data.getFilesFromDirectory();
     data.showFiles();
     data.getStudentsInfo();
-
-
-    //Table table;
-    //table.sortStudents();
-    /*for (int i = 0; i < 40; ++i)
-        std::cout << data.students[i]->name << std::endl;*/
+    
+    data.printStudents();
 }
+
+// Добавляю функцію виведення всіх елементів students
