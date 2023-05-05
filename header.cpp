@@ -94,14 +94,19 @@ double Table::getMinScolarshipScore()
 	return this->minScolarshipScore;
 }
 
-void Table::fillScolarshipStudents(parseData& data)
+void Table::calculateBudgetAmount()
+{
+	this->budgetAmount = this->scolarshipStudents.size();
+}
+
+void Table::fillBudgetStudents(parseData& data)
 {
 	for (int i = 0; i < data.getTotalLine(); ++i)
 	{
 		if (data.students[i]->getContractPlace() == false)
 		{
 			this->scolarshipStudents.push_back(new Student(
-				data.students[i]->getName(), 
+				data.students[i]->getName(),
 				data.students[i]->getAvgScore(),
 				data.students[i]->getContractPlace()
 			));
@@ -115,8 +120,11 @@ void Table::fillScolarshipStudents(parseData& data)
 			*/
 		}
 	}
+}
 
-	this->budgetAmount = this->scolarshipStudents.size();
+void Table::calculateScolarshipAmount()
+{
+	this->scolarshipAmount = this->budgetAmount * this->scolarshipRatio;
 }
 
 
@@ -132,8 +140,6 @@ void Table::outputDataIntoFile()
 	output.open("rating.csv");
 
 	assert(output.is_open());
-
-	this->scolarshipAmount = this->budgetAmount * this->scolarshipRatio;
 
 	for (int i = 0; i < this->scolarshipAmount; ++i)
 	{

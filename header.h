@@ -58,10 +58,13 @@ public:
 	Table();
 
 	void sortStudents();
-	void calculateMinScolarshipScore();
 	double getMinScolarshipScore();
+	
+	void calculateMinScolarshipScore();
+	void calculateBudgetAmount();
+	void calculateScolarshipAmount();
 
-	void fillScolarshipStudents(parseData&);
+	void fillBudgetStudents(parseData&);
 	void printStudents();
 	void outputDataIntoFile();
 };
