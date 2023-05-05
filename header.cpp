@@ -1,6 +1,11 @@
 #include "header.h"
 // ---------------------- Person ---------------------- 
 
+Person::Person(std::string name_val)
+{
+	this->name = name_val;
+}
+
 std::string Person::getName()
 {
 	return this->name;
@@ -9,6 +14,18 @@ std::string Person::getName()
 void Person::setName(std::string name_val)
 {
 	this->name = name_val;
+}
+
+Student::Student()
+{
+	this->avgScore = 0;
+	this->contractPlace = true;
+}
+
+Student::Student(std::string _name, double _avgScore, bool _contractPlace) : Person(_name)
+{
+	this->avgScore = _avgScore;
+	this->contractPlace = _contractPlace;
 }
 
 // ---------------------- Student ---------------------- 
@@ -42,10 +59,14 @@ void Student::printStudent()
 
 // ---------------------- Table ---------------------- 
 
-Table::Table(int budgetAmountVal)
+Table::Table()
 {
-
+	this->budgetAmount = 0;
+	this->scolarshipAmount = 0;
+	this->scolarshipRatio = 0.4;
+	this->minScolarshipScore = 100;
 }
+
 
 void Table::sortStudents()
 {
@@ -65,10 +86,10 @@ void Table::sortStudents()
 
 void Table::calculateMinScolarshipScore()
 {
-	this->minScolarshipScore = this->scolarshipStudents[this->scolarshipAmount - 1];
+	this->minScolarshipScore = this->scolarshipStudents[this->scolarshipAmount - 1]->getAvgScore();
 }
 
-int Table::getMinScolarshipScore()
+double Table::getMinScolarshipScore()
 {
 	return this->minScolarshipScore;
 }
@@ -79,12 +100,19 @@ void Table::fillScolarshipStudents(parseData& data)
 	{
 		if (data.students[i]->getContractPlace() == false)
 		{
-			this->scolarshipStudents.push_back(new Student());
+			this->scolarshipStudents.push_back(new Student(
+				data.students[i]->getName(), 
+				data.students[i]->getAvgScore(),
+				data.students[i]->getContractPlace()
+			));
+
+			/*
 			int index = scolarshipStudents.size() - 1;
 
 			this->scolarshipStudents[index]->setName(data.students[i]->getName());
 			this->scolarshipStudents[index]->setAvgScore(data.students[i]->getAvgScore());
 			this->scolarshipStudents[index]->setContractPlace(data.students[i]->getContractPlace());
+			*/
 		}
 	}
 
@@ -155,9 +183,16 @@ void inputData::getFilesFromDirectory()
 }
 // ---------------------- parseData ---------------------- 
 
-parseData::parseData(std::string dirName) : inputData(dirName), lineCount(0), totalLine(0)
+parseData::parseData()
 {
+	this->lineCount = 0;;
+	this->totalLine = 0;
+}
 
+parseData::parseData(std::string dirName) : inputData(dirName)
+{
+	this->lineCount = 0;
+	this->totalLine = 0;
 }
 
 void parseData::getStudentsInfo()

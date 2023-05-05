@@ -6,9 +6,9 @@ int main()
 
     parseData data(dirName);
 
-    std::cout << data.getDirectory() << std::endl;
+    //std::cout << data.getDirectory() << std::endl;
     data.getFilesFromDirectory();
-    data.showFiles();
+    //data.showFiles();
     data.getStudentsInfo();
     //data.printStudents();
 
@@ -16,9 +16,12 @@ int main()
     table.fillScolarshipStudents(data);
     table.sortStudents();
 
-    table.printStudents();
+    //table.printStudents();
+    
     table.outputDataIntoFile();
     table.calculateMinScolarshipScore();
-    std::cout << table.getMinScolarshipScore() << std::endl;
+    std::cout << "Minimum scolarship score: ";
+    std::cout << std::fixed << std::setprecision(3) << table.getMinScolarshipScore() << std::endl;
+    
     //data.printStudents();
 }

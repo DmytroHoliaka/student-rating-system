@@ -14,10 +14,13 @@ class parseData;
 
 class Person
 {
-private: // private
+private:
 	std::string name;
 
 public:
+	Person() = default;
+	Person(std::string);
+
 	std::string getName();
 	void setName(std::string);
 };
@@ -30,6 +33,9 @@ private:
 	bool contractPlace;
 
 public:
+	Student();
+	Student(std::string, double, bool);
+
 	double getAvgScore();
 	void setAvgScore(double);
 
@@ -44,17 +50,16 @@ class Table
 private:
 	int budgetAmount;
 	int scolarshipAmount;
-	double scolarshipRatio = 0.4;
-	int minScolarshipScore;
+	double scolarshipRatio;
+	double minScolarshipScore;
 	std::vector<Student*> scolarshipStudents;
 
 public:
-	Table() = default;
-	Table(int budgetAmountVal);
+	Table();
 
 	void sortStudents();
 	void calculateMinScolarshipScore();
-	int getMinScolarshipScore();
+	double getMinScolarshipScore();
 
 	void fillScolarshipStudents(parseData&);
 	void printStudents();
@@ -92,11 +97,10 @@ private:
 	void parseStudentInfo(std::istream&);
 
 public:
-	parseData() = default;
+	parseData();
 	parseData(std::string);
 
 	int getTotalLine();
-
 	void getStudentsInfo();
 	void printStudents();
 };
