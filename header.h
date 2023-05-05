@@ -9,8 +9,6 @@
 #include <cassert>
 #include <iomanip>
 
-
-
 class inputData;
 class parseData;
 
@@ -29,14 +27,14 @@ class Student : public Person
 {
 private:
 	double avgScore;
-	bool budgetPlace;
+	bool contractPlace;
 
 public:
 	double getAvgScore();
 	void setAvgScore(double);
 
-	bool getBudgetPlace();
-	void setBudgetPlace(bool);
+	bool getContractPlace();
+	void setContractPlace(bool);
 
 	void printStudent();
 };
@@ -48,12 +46,19 @@ private:
 	int scolarshipAmount;
 	double scolarshipRatio = 0.4;
 	int minScolarshipScore;
+	std::vector<Student*> scolarshipStudents;
 
 public:
-	void calculateBudgetAmount();
-	void sortStudents(parseData&);
-	void calculateScolarshipAmount();
+	Table() = default;
+	Table(int budgetAmountVal);
+
+	void sortStudents();
 	void calculateMinScolarshipScore();
+	int getMinScolarshipScore();
+
+	void fillScolarshipStudents(parseData&);
+	void printStudents();
+	void outputDataIntoFile();
 };
 
 
@@ -78,7 +83,7 @@ public:
 
 class parseData : public inputData
 {
-	friend void Table::sortStudents(parseData&);
+	friend class Table;
 private:
 	int lineCount;
 	int totalLine;
@@ -89,6 +94,8 @@ private:
 public:
 	parseData() = default;
 	parseData(std::string);
+
+	int getTotalLine();
 
 	void getStudentsInfo();
 	void printStudents();

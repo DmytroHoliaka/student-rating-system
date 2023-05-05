@@ -13,7 +13,12 @@ int main()
     //data.printStudents();
 
     Table table;
-    table.sortStudents(data);
+    table.fillScolarshipStudents(data);
+    table.sortStudents();
 
-    data.printStudents();
+    table.printStudents();
+    table.outputDataIntoFile();
+    table.calculateMinScolarshipScore();
+    std::cout << table.getMinScolarshipScore() << std::endl;
+    //data.printStudents();
 }

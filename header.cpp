@@ -22,42 +22,99 @@ void Student::setAvgScore(double val)
 	this->avgScore = val;
 }
 
-bool Student::getBudgetPlace()
+bool Student::getContractPlace()
 {
-	return this->budgetPlace;
+	return this->contractPlace;
 }
 
-void Student::setBudgetPlace(bool val)
+void Student::setContractPlace(bool val)
 {
-	this->budgetPlace = val;
+	this->contractPlace = val;
 }
 
 void Student::printStudent()
 {
 	std::cout << "name: " << this->getName() << std::endl;
-	std::cout << "avgScore: " << this->avgScore << std::endl;
-	std::cout << "budgetPlace: " << ((this->budgetPlace) ? "True" : "False") << std::endl;
+	std::cout << "avgScore: " << std::fixed << std::setprecision(3) << this->avgScore << std::endl;
+	std::cout << "budgetPlace: " << ((this->contractPlace) ? "True" : "False") << std::endl;
 	std::cout << std::endl;
 }
 
 // ---------------------- Table ---------------------- 
 
-void Table::sortStudents(parseData& data)
+Table::Table(int budgetAmountVal)
 {
-	for (int i = 0; i < data.totalLine - 1; ++i)
+
+}
+
+void Table::sortStudents()
+{
+	for (int i = 0; i < this->budgetAmount - 1; ++i)
 	{
 		int j = i + 1;
 
-		while (j > 0 && (data.students[j]->getAvgScore()) > (data.students[j - 1]->getAvgScore()))
+		while (j > 0 && (this->scolarshipStudents[j]->getAvgScore()) > (this->scolarshipStudents[j - 1]->getAvgScore()))
 		{
-			Student* temp = data.students[j - 1];
-			data.students[j - 1] = data.students[j];
-			data.students[j] = temp;
+			Student* temp = this->scolarshipStudents[j - 1];
+			this->scolarshipStudents[j - 1] = this->scolarshipStudents[j];
+			this->scolarshipStudents[j] = temp;
 			--j;
 		}
 	}
 }
 
+void Table::calculateMinScolarshipScore()
+{
+	this->minScolarshipScore = this->scolarshipStudents[this->scolarshipAmount - 1];
+}
+
+int Table::getMinScolarshipScore()
+{
+	return this->minScolarshipScore;
+}
+
+void Table::fillScolarshipStudents(parseData& data)
+{
+	for (int i = 0; i < data.getTotalLine(); ++i)
+	{
+		if (data.students[i]->getContractPlace() == false)
+		{
+			this->scolarshipStudents.push_back(new Student());
+			int index = scolarshipStudents.size() - 1;
+
+			this->scolarshipStudents[index]->setName(data.students[i]->getName());
+			this->scolarshipStudents[index]->setAvgScore(data.students[i]->getAvgScore());
+			this->scolarshipStudents[index]->setContractPlace(data.students[i]->getContractPlace());
+		}
+	}
+
+	this->budgetAmount = this->scolarshipStudents.size();
+}
+
+
+void Table::printStudents()
+{
+	for (int i = 0; i < int(this->budgetAmount); ++i)
+		this->scolarshipStudents[i]->printStudent();
+}
+
+void Table::outputDataIntoFile()
+{
+	std::ofstream output;
+	output.open("rating.csv");
+
+	assert(output.is_open());
+
+	this->scolarshipAmount = this->budgetAmount * this->scolarshipRatio;
+
+	for (int i = 0; i < this->scolarshipAmount; ++i)
+	{
+		output << scolarshipStudents[i]->getName() << "," << scolarshipStudents[i]->getAvgScore();
+
+		if (i < this->scolarshipAmount - 1)
+			output << std::endl;;
+	}
+}
 
 // ---------------------- inputData ---------------------- 
 
@@ -134,6 +191,11 @@ void parseData::printStudents()
 		students[i]->printStudent();
 }
 
+int parseData::getTotalLine()
+{
+	return this->totalLine;
+}
+
 void parseData::parseStudentInfo(std::istream& input)
 {
 	students.push_back(new Student());
@@ -159,6 +221,6 @@ void parseData::parseStudentInfo(std::istream& input)
 	}
 
 	students[index - 1]->setAvgScore(sum / (double)count);
-	students[index - 1]->setBudgetPlace(word == "TRUE");
+	students[index - 1]->setContractPlace(word == "TRUE");
 }
 
