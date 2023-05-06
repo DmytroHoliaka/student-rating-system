@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <cassert>
 #include <iomanip>
+#include <stdexcept>
 
 class inputData;
 class parseData;
@@ -83,7 +84,6 @@ public:
 	std::string getDirectory();
 	void setDirectory(std::string);
 
-
 	void getFilesFromDirectory();
 	void showFiles();
 };
@@ -106,4 +106,6 @@ public:
 	int getTotalLine();
 	void getStudentsInfo();
 	void printStudents();
+	void checkTotalLine();
+	void removeRecord();
 };

@@ -134,6 +134,11 @@
   <ItemGroup>
     <ClInclude Include="header.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assignment_2.md" />
+    <None Include="ClassDiagram.cd" />
+    <None Include="rating.csv" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

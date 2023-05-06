@@ -1,4 +1,16 @@
 #include "header.h"
+
+bool isConvertibleToNumber(std::string& word)
+{
+	try {
+		std::stoi(word);
+		return true;
+	}
+	catch (const std::exception&) {
+		return false;
+	}
+}
+
 // ---------------------- Person ---------------------- 
 
 Person::Person(std::string name_val)
@@ -96,7 +108,10 @@ double Table::getMinScolarshipScore()
 
 void Table::calculateBudgetAmount()
 {
-	this->budgetAmount = this->scolarshipStudents.size();
+	int size = this->scolarshipStudents.size();
+	if (size == 0)
+		throw std::range_error("There are no scholarship students");
+	this->budgetAmount = size;
 }
 
 void Table::fillBudgetStudents(parseData& data)
@@ -124,7 +139,7 @@ void Table::fillBudgetStudents(parseData& data)
 
 void Table::calculateScolarshipAmount()
 {
-	this->scolarshipAmount = this->budgetAmount * this->scolarshipRatio;
+	this->scolarshipAmount = std::ceil(this->budgetAmount * this->scolarshipRatio);
 }
 
 
@@ -153,9 +168,22 @@ void Table::outputDataIntoFile()
 // ---------------------- inputData ---------------------- 
 
 
-inputData::inputData(std::string dirName) : directory(dirName)
+inputData::inputData(std::string dirName)
 {
-
+	if (std::filesystem::exists(dirName) && std::filesystem::is_directory(dirName)) {
+		this->directory = dirName;
+	}
+	else if (std::filesystem::exists(dirName) && !std::filesystem::is_directory(dirName)) {
+		throw std::range_error("Such a directory doesn't exist");
+	}
+	else if (!std::filesystem::exists(dirName))
+	{
+		throw std::range_error("There is no such name.");
+	}
+	else
+	{
+		throw std::range_error("Error. Change directory name.");
+	}
 }
 
 std::string inputData::getDirectory()
@@ -186,6 +214,9 @@ void inputData::getFilesFromDirectory()
 			files.push_back(file.path().string());
 		}
 	}
+
+	if (this->files.size() == 0)
+		throw std::range_error("Directory is empty.");
 }
 // ---------------------- parseData ---------------------- 
 
@@ -199,6 +230,32 @@ parseData::parseData(std::string dirName) : inputData(dirName)
 {
 	this->lineCount = 0;
 	this->totalLine = 0;
+}
+
+void parseData::printStudents()
+{
+	for (int i = 0; i < this->totalLine; ++i)
+		students[i]->printStudent();
+}
+
+void parseData::checkTotalLine()
+{
+	if (this->totalLine == 0)
+	{
+		throw std::runtime_error("There is no record");
+	}
+}
+
+void parseData::removeRecord()
+{
+	this->totalLine -= 1;
+	this->students.pop_back();
+	return;
+}
+
+int parseData::getTotalLine()
+{
+	return this->totalLine;
 }
 
 void parseData::getStudentsInfo()
@@ -215,6 +272,9 @@ void parseData::getStudentsInfo()
 		input >> this->lineCount;
 		input.get();
 
+		if (this->lineCount == 0)
+			return;
+
 		this->totalLine += this->lineCount;
 
 		for (int j = 0; j < this->lineCount; ++j)
@@ -226,17 +286,6 @@ void parseData::getStudentsInfo()
 	}
 }
 
-void parseData::printStudents()
-{
-	for (int i = 0; i < this->totalLine; ++i)
-		students[i]->printStudent();
-}
-
-int parseData::getTotalLine()
-{
-	return this->totalLine;
-}
-
 void parseData::parseStudentInfo(std::istream& input)
 {
 	students.push_back(new Student());
@@ -246,22 +295,47 @@ void parseData::parseStudentInfo(std::istream& input)
 	std::string line;
 
 	std::getline(input, line);
+	
+	if (line.empty())
+	{
+		this->totalLine -= 1;
+		this->students.pop_back();
+		return;
+	}
+
 	std::istringstream is(line);
 
 	std::string word;
 	std::getline(is, word, ',');
 
+	if (word.empty() || isConvertibleToNumber(word))
+	{
+		this->removeRecord();
+		return;
+	}
+
 	students[index - 1]->setName(word);
 
 	int count = 0;
-	while (std::getline(is, word, ',') && word != "TRUE" && word != "FALSE")
+	while (std::getline(is, word, ',') && word != "TRUE" && word != "FALSE" && isConvertibleToNumber(word))
 	{
 		//std::cout << word << " ";
 		sum += std::stoi(word);
 		++count;
 	}
-
+	
+	if (count == 0)
+	{
+		this->removeRecord();
+		return;
+	}
 	students[index - 1]->setAvgScore(sum / (double)count);
+
+	if (word != "TRUE" && word != "FALSE")
+	{
+		this->removeRecord();
+		return;
+	}
 	students[index - 1]->setContractPlace(word == "TRUE");
 }
 

@@ -27,4 +27,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="assignment_2.md" />
+    <None Include="rating.csv" />
+  </ItemGroup>
 </Project>
