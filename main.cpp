@@ -2,6 +2,8 @@
 
 int main(int argc, char* argv[])
 {
+    std::setlocale(LC_ALL, "uk_UA.UTF-8");
+
     try {
         if (argc <= 1)
             throw std::out_of_range("Parameter not passed");
