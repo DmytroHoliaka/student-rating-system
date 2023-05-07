@@ -3,36 +3,45 @@
 int main(int argc, char* argv[])
 {
 	std::setlocale(LC_ALL, "uk_UA.UTF-8");
+	std::string fileOutputName = "rating.csv";
 
 	try {
 		if (argc <= 1)
-			throw std::out_of_range("Parameter not passed");
+			throw std::out_of_range("Parameter not passed");  // Шизофренія
 
 		std::string dirName = argv[1];
 		parseData data(dirName);
 
-		//std::cout << data.getDirectory() << std::endl;
-		data.getFilesFromDirectory();
-		//data.showFiles();
+		data.processFilesFromDirectory();
+		std::cout << data.getFiles();
 
-		std::vector<Student*> studentsFromAllFiles = data.getStudentsInfo();
-		//data.printStudents();
+		std::vector<Student*> studentsFromAllFiles = data.getStudents();
+		//std::cout << studentsFromAllFiles;
+
 		data.checkTotalLine();
 
 		Table table;
 		table.fillBudgetStudents(data, studentsFromAllFiles);
 
-		table.calculateBudgetAmount();
-		table.calculateScolarshipAmount();
+		std::cout << "BudgetAmount: " << table.calculateBudgetAmount() << std::endl;
+		std::cout << "ScolarshipAmount: " << table.calculateScolarshipAmount() << std::endl;
 
+		//std::cout << table.getScolarshipStudents() << std::endl;
+		
 		table.sortStudents();
-		table.outputDataIntoFile();
 
-		table.calculateMinScolarshipScore();
+		std::ofstream file(fileOutputName);
+		if (!file.is_open())
+		{
+			std::cout << "Can't open file " << fileOutputName << " for writing" << std::endl;
+			return 1;  // Напиши код, який відповідає конкретно цій ситуації
+		}
+
+		file << table;
 		std::cout << "Minimum scolarship score: ";
-		std::cout << std::fixed << std::setprecision(3) << table.getMinScolarshipScore() << std::endl;
+		std::cout << std::fixed << std::setprecision(3) << table.calculateMinScolarshipScore() << std::endl;
 
-		//data.printStudents();
+		//std::cout << table.getScolarshipStudents() << std::endl;
 	}
 	catch (std::range_error err) {
 		std::cout << err.what() << std::endl;

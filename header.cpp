@@ -11,6 +11,47 @@ bool isConvertibleToNumber(std::string& word)
 	}
 }
 
+std::ostream& operator<<(std::ostream& output, std::vector<Student*>& students)
+{
+	for (int i = 0; i < students.size(); ++i)
+	{
+		output << students[i] << std::endl;
+	}
+
+	return output;
+}
+
+
+std::ostream& operator<<(std::ostream& output, std::vector<std::string>& files)
+{
+	std::string spacer = "------------------------";
+
+	std::cout << spacer << std::endl;
+	for (const auto& file : files)
+		output << file << std::endl;
+	output << spacer << std::endl;
+	return output;
+}
+
+std::ostream& operator<<(std::ostream& output, Student* student)
+{
+	output << student->getName() << "," << student->getAvgScore();
+
+	return output;
+}
+
+std::ostream& operator<<(std::ostream& output, Table& table)
+{
+	for (int i = 0; i < table.scolarshipAmount; ++i)
+	{
+		output << table.scolarshipStudents[i];
+
+		if (i < table.scolarshipAmount - 1)
+			output << std::endl;;
+	}
+	return output;
+}
+
 // ---------------------- Person ---------------------- 
 
 Person::Person(std::string name_val)
@@ -61,14 +102,6 @@ void Student::setContractPlace(bool val)
 	this->contractPlace = val;
 }
 
-void Student::printStudent()
-{
-	std::cout << "name: " << this->getName() << std::endl;
-	std::cout << "avgScore: " << std::fixed << std::setprecision(3) << this->avgScore << std::endl;
-	std::cout << "budgetPlace: " << ((this->contractPlace) ? "True" : "False") << std::endl;
-	std::cout << std::endl;
-}
-
 // ---------------------- Table ---------------------- 
 
 Table::Table()
@@ -96,22 +129,30 @@ void Table::sortStudents()
 	}
 }
 
-void Table::calculateMinScolarshipScore()
+double Table::calculateMinScolarshipScore()
 {
 	this->minScolarshipScore = this->scolarshipStudents[this->scolarshipAmount - 1]->getAvgScore();
+	return this->minScolarshipScore;
 }
+
 
 double Table::getMinScolarshipScore()
 {
 	return this->minScolarshipScore;
 }
 
-void Table::calculateBudgetAmount()
+std::vector<Student*>& Table::getScolarshipStudents()
+{
+	return this->scolarshipStudents;
+}
+
+int Table::calculateBudgetAmount()
 {
 	int size = this->scolarshipStudents.size();
 	if (size == 0)
 		throw std::range_error("There are no scholarship students");
 	this->budgetAmount = size;
+	return size;
 }
 
 void Table::fillBudgetStudents(parseData& data, std::vector<Student*> students)
@@ -137,32 +178,10 @@ void Table::fillBudgetStudents(parseData& data, std::vector<Student*> students)
 	}
 }
 
-void Table::calculateScolarshipAmount()
+int Table::calculateScolarshipAmount()
 {
 	this->scolarshipAmount = std::ceil(this->budgetAmount * this->scolarshipRatio);
-}
-
-
-void Table::printStudents()
-{
-	for (int i = 0; i < int(this->budgetAmount); ++i)
-		this->scolarshipStudents[i]->printStudent();
-}
-
-void Table::outputDataIntoFile()
-{
-	std::ofstream output;
-	output.open("rating.csv");
-
-	assert(output.is_open());
-
-	for (int i = 0; i < this->scolarshipAmount; ++i)
-	{
-		output << scolarshipStudents[i]->getName() << "," << scolarshipStudents[i]->getAvgScore();
-
-		if (i < this->scolarshipAmount - 1)
-			output << std::endl;;
-	}
+	return this->scolarshipAmount;
 }
 
 // ---------------------- inputData ---------------------- 
@@ -186,6 +205,11 @@ inputData::inputData(std::string dirName)
 	}
 }
 
+std::vector<std::string>& inputData::getFiles()
+{
+	return this->files;
+}
+
 std::string inputData::getDirectory()
 {
 	return this->directory;
@@ -196,17 +220,8 @@ void inputData::setDirectory(std::string dirName)
 	this->directory = dirName;
 }
 
-void inputData::showFiles()
-{
-	std::string spacer = "------------------------";
 
-	std::cout << spacer << std::endl;
-	for (const auto& file : this->files)
-		std::cout << file << std::endl;
-	std::cout << spacer << std::endl;
-}
-
-void inputData::getFilesFromDirectory()
+void inputData::processFilesFromDirectory()
 {
 	for (const auto& file : std::filesystem::directory_iterator(this->directory))
 	{
@@ -231,12 +246,6 @@ parseData::parseData(std::string dirName) : inputData(dirName)
 	this->totalLine = 0;
 }
 
-//void parseData::printStudents()
-//{
-//	for (int i = 0; i < this->totalLine; ++i)
-//		students[i]->printStudent();
-//}
-
 void parseData::checkTotalLine()
 {
 	if (this->totalLine == 0)
@@ -257,7 +266,7 @@ int parseData::getTotalLine()
 	return this->totalLine;
 }
 
-std::vector<Student*> parseData::getStudentsInfo()
+std::vector<Student*> parseData::getStudents()
 {
 	std::vector<Student*> students;
 	for (int i = 0; i < files.size(); ++i)
@@ -267,7 +276,7 @@ std::vector<Student*> parseData::getStudentsInfo()
 		std::ifstream input;
 		input.open(this->fileName);
 
-		assert(input.is_open());
+		assert(input.is_open());  // Така собі ідея, близько до широфринії
 
 		input >> this->lineCount;
 		input.get();
@@ -279,7 +288,7 @@ std::vector<Student*> parseData::getStudentsInfo()
 
 		for (int j = 0; j < this->lineCount; ++j)
 		{
-			parseStudentInfo(input, students);
+			parseLineOfStudent(input, students);
 		}
 
 		input.close();
@@ -288,7 +297,7 @@ std::vector<Student*> parseData::getStudentsInfo()
 	return students;
 }
 
-void parseData::parseStudentInfo(std::istream& input, std::vector<Student*>& students)
+void parseData::parseLineOfStudent(std::istream& input, std::vector<Student*>& students)
 {
 	students.push_back(new Student());
 	int index = students.size();
@@ -297,7 +306,7 @@ void parseData::parseStudentInfo(std::istream& input, std::vector<Student*>& stu
 	std::string line;
 
 	std::getline(input, line);
-	
+
 	if (line.empty())
 	{
 		this->totalLine -= 1;
@@ -326,7 +335,7 @@ void parseData::parseStudentInfo(std::istream& input, std::vector<Student*>& stu
 		sum += std::stoi(word);
 		++count;
 	}
-	
+
 	if (count == 0)
 	{
 		this->totalLine -= 1;

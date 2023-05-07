@@ -12,6 +12,17 @@
 
 class inputData;
 class parseData;
+class Person;
+class Student;
+class Table;
+
+std::ostream& operator<<(std::ostream&, std::vector<Student*>&);
+std::ostream& operator<<(std::ostream&, std::vector<std::string>&);
+std::ostream& operator<<(std::ostream&, Student*);
+std::ostream& operator<<(std::ostream&, Table&);
+
+
+// ToDo: Прибери всі assert під час перевірки відкритості файлу на щось адекватніше - шизофринія 
 
 class Person
 {
@@ -21,10 +32,6 @@ private:
 public:
 	Person() = default;
 	Person(std::string);
-	~Person()
-	{
-		std::cout << "From Person destructor" << std::endl;
-	}
 
 	std::string getName();
 	void setName(std::string);
@@ -33,6 +40,8 @@ public:
 
 class Student : public Person
 {
+	//friend std::ostream& operator<<(std::ostream&, Student*);
+
 private:
 	double avgScore;
 	bool contractPlace;
@@ -40,23 +49,17 @@ private:
 public:
 	Student();
 	Student(std::string, double, bool);
-	~Student()
-	{
-		std::cout << "From Student destructor" << std::endl;
-	}
-
 
 	double getAvgScore();
 	void setAvgScore(double);
 
 	bool getContractPlace();
 	void setContractPlace(bool);
-
-	void printStudent();
 };
 
 class Table
 {
+	friend std::ostream& operator<<(std::ostream&, Table&);
 private:
 	int budgetAmount;
 	int scolarshipAmount;
@@ -66,26 +69,23 @@ private:
 
 public:
 	Table();
-	~Table()
-	{
-		std::cout << "From Table destructor" << std::endl;
-	}
 
 	void sortStudents();
-	double getMinScolarshipScore();
 	
-	void calculateMinScolarshipScore();
-	void calculateBudgetAmount();
-	void calculateScolarshipAmount();
+	double getMinScolarshipScore();
+	std::vector<Student*>& getScolarshipStudents();
 
-	void fillBudgetStudents(parseData&, std::vector<Student*>);
-	void printStudents();
-	void outputDataIntoFile();
+	double calculateMinScolarshipScore();
+	int calculateBudgetAmount();
+	int calculateScolarshipAmount();
+
+	void fillBudgetStudents(parseData&, std::vector<Student*>);  // Перероби через конструктор
 };
 
 
 class inputData
 {
+	//friend std::ostream& operator<<(std::ostream&, std::vector<std::string>);
 protected:
 	std::vector<std::string> files;
 	std::string directory;
@@ -93,39 +93,32 @@ protected:
 public:
 	inputData() = default;
 	inputData(std::string dirName);
-	~inputData()
-	{
-		std::cout << "From inputData destructor" << std::endl;
-	}
 
+	std::vector<std::string>& getFiles();
 	std::string getDirectory();
 	void setDirectory(std::string);
 
-	void getFilesFromDirectory();
-	void showFiles();
+	void processFilesFromDirectory();
 };
 
 
 class parseData : public inputData
 {
 	friend class Table;
+	//friend std::ostream& operator<<(std::ostream&, std::vector<Student*>&);
+
 private:
 	int lineCount;
 	int totalLine;
 	std::string fileName;
-	void parseStudentInfo(std::istream&, std::vector<Student*>&);
-	void removeRecord();
+	void parseLineOfStudent(std::istream&, std::vector<Student*>&);
+	void removeRecord();	 // Дороби методо, зараз він не плацює
 
 public:
 	parseData();
 	parseData(std::string);
-	~parseData()
-	{
-		std::cout << "From parseData destructor" << std::endl;
-	}
 
 	int getTotalLine();
-	std::vector<Student*> getStudentsInfo();
-	void printStudents();  // Видалити з цього класу
-	void checkTotalLine();
+	std::vector<Student*> getStudents();
+	void checkTotalLine();  // Кудись перенеси, це не відповідальність парсингу
 };
