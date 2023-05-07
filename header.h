@@ -21,6 +21,10 @@ private:
 public:
 	Person() = default;
 	Person(std::string);
+	~Person()
+	{
+		std::cout << "From Person destructor" << std::endl;
+	}
 
 	std::string getName();
 	void setName(std::string);
@@ -36,6 +40,11 @@ private:
 public:
 	Student();
 	Student(std::string, double, bool);
+	~Student()
+	{
+		std::cout << "From Student destructor" << std::endl;
+	}
+
 
 	double getAvgScore();
 	void setAvgScore(double);
@@ -57,6 +66,10 @@ private:
 
 public:
 	Table();
+	~Table()
+	{
+		std::cout << "From Table destructor" << std::endl;
+	}
 
 	void sortStudents();
 	double getMinScolarshipScore();
@@ -65,7 +78,7 @@ public:
 	void calculateBudgetAmount();
 	void calculateScolarshipAmount();
 
-	void fillBudgetStudents(parseData&);
+	void fillBudgetStudents(parseData&, std::vector<Student*>);
 	void printStudents();
 	void outputDataIntoFile();
 };
@@ -80,6 +93,10 @@ protected:
 public:
 	inputData() = default;
 	inputData(std::string dirName);
+	~inputData()
+	{
+		std::cout << "From inputData destructor" << std::endl;
+	}
 
 	std::string getDirectory();
 	void setDirectory(std::string);
@@ -96,16 +113,19 @@ private:
 	int lineCount;
 	int totalLine;
 	std::string fileName;
-	std::vector<Student*> students;
-	void parseStudentInfo(std::istream&);
+	void parseStudentInfo(std::istream&, std::vector<Student*>&);
+	void removeRecord();
 
 public:
 	parseData();
 	parseData(std::string);
+	~parseData()
+	{
+		std::cout << "From parseData destructor" << std::endl;
+	}
 
 	int getTotalLine();
-	void getStudentsInfo();
-	void printStudents();
+	std::vector<Student*> getStudentsInfo();
+	void printStudents();  // Видалити з цього класу
 	void checkTotalLine();
-	void removeRecord();
 };

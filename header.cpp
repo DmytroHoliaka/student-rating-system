@@ -114,16 +114,16 @@ void Table::calculateBudgetAmount()
 	this->budgetAmount = size;
 }
 
-void Table::fillBudgetStudents(parseData& data)
+void Table::fillBudgetStudents(parseData& data, std::vector<Student*> students)
 {
 	for (int i = 0; i < data.getTotalLine(); ++i)
 	{
-		if (data.students[i]->getContractPlace() == false)
+		if (students[i]->getContractPlace() == false)
 		{
 			this->scolarshipStudents.push_back(new Student(
-				data.students[i]->getName(),
-				data.students[i]->getAvgScore(),
-				data.students[i]->getContractPlace()
+				students[i]->getName(),
+				students[i]->getAvgScore(),
+				students[i]->getContractPlace()
 			));
 
 			/*
@@ -219,7 +219,6 @@ void inputData::getFilesFromDirectory()
 		throw std::range_error("Directory is empty.");
 }
 // ---------------------- parseData ---------------------- 
-
 parseData::parseData()
 {
 	this->lineCount = 0;;
@@ -232,11 +231,11 @@ parseData::parseData(std::string dirName) : inputData(dirName)
 	this->totalLine = 0;
 }
 
-void parseData::printStudents()
-{
-	for (int i = 0; i < this->totalLine; ++i)
-		students[i]->printStudent();
-}
+//void parseData::printStudents()
+//{
+//	for (int i = 0; i < this->totalLine; ++i)
+//		students[i]->printStudent();
+//}
 
 void parseData::checkTotalLine()
 {
@@ -246,20 +245,21 @@ void parseData::checkTotalLine()
 	}
 }
 
-void parseData::removeRecord()
-{
-	this->totalLine -= 1;
-	this->students.pop_back();
-	return;
-}
+//void parseData::removeRecord()
+//{
+//	this->totalLine -= 1;
+//	this->students.pop_back();
+//	return;
+//}
 
 int parseData::getTotalLine()
 {
 	return this->totalLine;
 }
 
-void parseData::getStudentsInfo()
+std::vector<Student*> parseData::getStudentsInfo()
 {
+	std::vector<Student*> students;
 	for (int i = 0; i < files.size(); ++i)
 	{
 		this->fileName = files[i];
@@ -273,20 +273,22 @@ void parseData::getStudentsInfo()
 		input.get();
 
 		if (this->lineCount == 0)
-			return;
+			continue;
 
 		this->totalLine += this->lineCount;
 
 		for (int j = 0; j < this->lineCount; ++j)
 		{
-			parseStudentInfo(input);
+			parseStudentInfo(input, students);
 		}
 
 		input.close();
 	}
+
+	return students;
 }
 
-void parseData::parseStudentInfo(std::istream& input)
+void parseData::parseStudentInfo(std::istream& input, std::vector<Student*>& students)
 {
 	students.push_back(new Student());
 	int index = students.size();
@@ -299,7 +301,7 @@ void parseData::parseStudentInfo(std::istream& input)
 	if (line.empty())
 	{
 		this->totalLine -= 1;
-		this->students.pop_back();
+		students.pop_back();
 		return;
 	}
 
@@ -310,7 +312,8 @@ void parseData::parseStudentInfo(std::istream& input)
 
 	if (word.empty() || isConvertibleToNumber(word))
 	{
-		this->removeRecord();
+		this->totalLine -= 1;
+		students.pop_back();
 		return;
 	}
 
@@ -326,14 +329,16 @@ void parseData::parseStudentInfo(std::istream& input)
 	
 	if (count == 0)
 	{
-		this->removeRecord();
+		this->totalLine -= 1;
+		students.pop_back();
 		return;
 	}
 	students[index - 1]->setAvgScore(sum / (double)count);
 
 	if (word != "TRUE" && word != "FALSE")
 	{
-		this->removeRecord();
+		this->totalLine -= 1;
+		students.pop_back();
 		return;
 	}
 	students[index - 1]->setContractPlace(word == "TRUE");
