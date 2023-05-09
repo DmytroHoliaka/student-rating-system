@@ -276,7 +276,11 @@ std::vector<Student*> parseData::getStudents()
 		std::ifstream input;
 		input.open(this->fileName);
 
-		assert(input.is_open());  // Така собі ідея, близько до широфринії
+		if (!input.is_open())
+		{
+			std::cerr << "Can't open " << fileName << "for reading" << std::endl;
+			exit(2);
+		}
 
 		input >> this->lineCount;
 		input.get();

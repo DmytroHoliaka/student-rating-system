@@ -28,7 +28,7 @@ class Person
 {
 private:
 	std::string name;
-
+	   
 public:
 	Person() = default;
 	Person(std::string);

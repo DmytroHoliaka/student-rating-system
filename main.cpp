@@ -6,8 +6,11 @@ int main(int argc, char* argv[])
 	std::string fileOutputName = "rating.csv";
 
 	try {
-		if (argc <= 1)
-			throw std::out_of_range("Parameter not passed");  // Шизофренія
+		if (argc == 1)
+		{
+			std::cerr << "Parameter not passed" << std::endl;
+			exit(22);
+		}
 
 		std::string dirName = argv[1];
 		parseData data(dirName);
@@ -33,8 +36,8 @@ int main(int argc, char* argv[])
 		std::ofstream file(fileOutputName);
 		if (!file.is_open())
 		{
-			std::cout << "Can't open file " << fileOutputName << " for writing" << std::endl;
-			return 1;  // Напиши код, який відповідає конкретно цій ситуації
+			std::cerr << "Can't open file " << fileOutputName << " for writing" << std::endl;
+			exit(2);
 		}
 
 		file << table;
