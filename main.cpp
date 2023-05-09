@@ -23,8 +23,8 @@ int main(int argc, char* argv[])
 
 		checkTotalLine(data);
 
-		Table table;
-		table.fillBudgetStudents(data, studentsFromAllFiles);
+		Table table(data, studentsFromAllFiles);
+		//table.fillBudgetStudents(data, studentsFromAllFiles);
 
 		std::cout << "BudgetAmount: " << table.calculateBudgetAmount() << std::endl;
 		std::cout << "ScolarshipAmount: " << table.calculateScolarshipAmount() << std::endl;

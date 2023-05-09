@@ -120,6 +120,16 @@ Table::Table()
 	this->minScolarshipScore = 100;
 }
 
+Table::Table(parseData& data, std::vector<Student*> students)
+{
+	this->budgetAmount = 0;
+	this->scolarshipAmount = 0;
+	this->scolarshipRatio = 0.4;
+	this->minScolarshipScore = 100;
+
+	this->fillBudgetStudents(data, students);
+}
+
 
 void Table::sortStudents()
 {
@@ -174,14 +184,6 @@ void Table::fillBudgetStudents(parseData& data, std::vector<Student*> students)
 				students[i]->getAvgScore(),
 				students[i]->getContractPlace()
 			));
-
-			/*
-			int index = scolarshipStudents.size() - 1;
-
-			this->scolarshipStudents[index]->setName(data.students[i]->getName());
-			this->scolarshipStudents[index]->setAvgScore(data.students[i]->getAvgScore());
-			this->scolarshipStudents[index]->setContractPlace(data.students[i]->getContractPlace());
-			*/
 		}
 	}
 }

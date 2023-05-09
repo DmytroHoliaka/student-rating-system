@@ -65,6 +65,7 @@ private:
 
 public:
 	Table();
+	Table(parseData&, std::vector<Student*>);
 
 	void sortStudents();
 	
@@ -75,7 +76,7 @@ public:
 	int calculateBudgetAmount();
 	int calculateScolarshipAmount();
 
-	void fillBudgetStudents(parseData&, std::vector<Student*>);  // Перероби через конструктор
+	void fillBudgetStudents(parseData&, std::vector<Student*>);
 };
 
 
