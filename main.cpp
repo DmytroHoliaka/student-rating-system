@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		std::vector<Student*> studentsFromAllFiles = data.getStudents();
 		//std::cout << studentsFromAllFiles;
 
-		data.checkTotalLine();
+		checkTotalLine(data);
 
 		Table table;
 		table.fillBudgetStudents(data, studentsFromAllFiles);

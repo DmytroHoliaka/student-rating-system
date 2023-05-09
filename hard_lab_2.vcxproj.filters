@@ -31,5 +31,7 @@
     <None Include="ClassDiagram.cd" />
     <None Include="assignment_2.md" />
     <None Include="rating.csv" />
+    <None Include="input_files\students1.csv" />
+    <None Include="input_files\students2.csv" />
   </ItemGroup>
 </Project>

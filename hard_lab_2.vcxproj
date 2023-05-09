@@ -137,6 +137,8 @@
   <ItemGroup>
     <None Include="assignment_2.md" />
     <None Include="ClassDiagram.cd" />
+    <None Include="input_files\students1.csv" />
+    <None Include="input_files\students2.csv" />
     <None Include="rating.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

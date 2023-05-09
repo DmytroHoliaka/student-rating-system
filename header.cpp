@@ -1,5 +1,13 @@
 #include "header.h"
 
+void checkTotalLine(parseData& data)
+{
+	if (data.totalLine == 0)
+	{
+		throw std::runtime_error("There is no record");
+	}
+}
+
 bool isConvertibleToNumber(std::string& word)
 {
 	try {
@@ -244,14 +252,6 @@ parseData::parseData(std::string dirName) : inputData(dirName)
 {
 	this->lineCount = 0;
 	this->totalLine = 0;
-}
-
-void parseData::checkTotalLine()
-{
-	if (this->totalLine == 0)
-	{
-		throw std::runtime_error("There is no record");
-	}
 }
 
 //void parseData::removeRecord()

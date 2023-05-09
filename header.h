@@ -20,9 +20,7 @@ std::ostream& operator<<(std::ostream&, std::vector<Student*>&);
 std::ostream& operator<<(std::ostream&, std::vector<std::string>&);
 std::ostream& operator<<(std::ostream&, Student*);
 std::ostream& operator<<(std::ostream&, Table&);
-
-
-// ToDo: Прибери всі assert під час перевірки відкритості файлу на щось адекватніше - шизофринія 
+void checkTotalLine(parseData&);
 
 class Person
 {
@@ -40,8 +38,6 @@ public:
 
 class Student : public Person
 {
-	//friend std::ostream& operator<<(std::ostream&, Student*);
-
 private:
 	double avgScore;
 	bool contractPlace;
@@ -85,7 +81,6 @@ public:
 
 class inputData
 {
-	//friend std::ostream& operator<<(std::ostream&, std::vector<std::string>);
 protected:
 	std::vector<std::string> files;
 	std::string directory;
@@ -105,7 +100,7 @@ public:
 class parseData : public inputData
 {
 	friend class Table;
-	//friend std::ostream& operator<<(std::ostream&, std::vector<Student*>&);
+	friend void checkTotalLine(parseData&);
 
 private:
 	int lineCount;
@@ -120,5 +115,4 @@ public:
 
 	int getTotalLine();
 	std::vector<Student*> getStudents();
-	void checkTotalLine();  // Кудись перенеси, це не відповідальність парсингу
 };
