@@ -10,23 +10,26 @@
 #include <iomanip>
 #include <stdexcept>
 
-class inputData;
-class parseData;
+class InputData;
+class ParseData;
 class Person;
 class Student;
 class Table;
+class ParseError;
+class Validator;
 
 std::ostream& operator<<(std::ostream&, std::vector<Student*>&);
 std::ostream& operator<<(std::ostream&, std::vector<std::string>&);
+std::ostream& operator<<(std::ostream&, Validator&);
 std::ostream& operator<<(std::ostream&, Student*);
 std::ostream& operator<<(std::ostream&, Table&);
-void checkTotalLine(parseData&);
+void checkTotalLine(ParseData&);
 
 class Person
 {
 private:
 	std::string name;
-	   
+
 public:
 	Person() = default;
 	Person(std::string);
@@ -65,10 +68,10 @@ private:
 
 public:
 	Table();
-	Table(parseData&, std::vector<Student*>);
+	Table(ParseData&, std::vector<Student*>);
 
 	void sortStudents();
-	
+
 	double getMinScolarshipScore();
 	std::vector<Student*>& getScolarshipStudents();
 
@@ -76,19 +79,19 @@ public:
 	int calculateBudgetAmount();
 	int calculateScolarshipAmount();
 
-	void fillBudgetStudents(parseData&, std::vector<Student*>);
+	void fillBudgetStudents(ParseData&, std::vector<Student*>);
 };
 
 
-class inputData
+class InputData
 {
 protected:
 	std::vector<std::string> files;
 	std::string directory;
 
 public:
-	inputData() = default;
-	inputData(std::string dirName);
+	InputData() = default;
+	InputData(std::string dirName);
 
 	std::vector<std::string>& getFiles();
 	std::string getDirectory();
@@ -97,23 +100,62 @@ public:
 	void processFilesFromDirectory();
 };
 
+class Validator
+{
+private:
+	int currentLine;
+	std::string currentFile;
+	std::vector<ParseError*> errors;
 
-class parseData : public inputData
+public:
+	std::vector<ParseError*>& getErrors();
+
+	int getCurrentLine();
+	void setCurrentLine(int);
+
+	std::string getCurrentFile();
+	void setCurrentFile(std::string);
+
+	void validate(std::string);
+};
+
+class ParseError {
+private:
+	std::string fileName;
+	int lineIndex;
+	std::string columnName;
+
+public:
+	ParseError(std::string, int, std::string);
+
+	std::string getFileName();
+	void setFileName(std::string);
+
+	int getLineIndex();
+	void setlineIndex(int);
+
+	std::string getColumnName();
+	void setColumnName(std::string);
+};
+
+class ParseData : public InputData
 {
 	friend class Table;
-	friend void checkTotalLine(parseData&);
+	friend void checkTotalLine(ParseData&);
+
 
 private:
 	int lineCount;
+	int errorsCount;
 	int totalLine;
 	std::string fileName;
-	void parseLineOfStudent(std::istream&, std::vector<Student*>&);
-	void removeRecord();	 // Дороби методо, зараз він не плацює
+	void parseLineOfStudent(std::string, std::vector<Student*>&);
+	void removeRecord();	 // Дороби метод, зараз він не працює
 
 public:
-	parseData();
-	parseData(std::string);
+	ParseData();
+	ParseData(std::string);
 
 	int getTotalLine();
-	std::vector<Student*> getStudents();
+	std::vector<Student*> getStudents(Validator&);
 };
