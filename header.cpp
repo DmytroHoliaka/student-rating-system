@@ -96,6 +96,7 @@ void Person::setName(std::string name_val)
 	this->name = name_val;
 }
 
+// ---------------------- Student ---------------------- 
 Student::Student()
 {
 	this->avgScore = 0;
@@ -108,7 +109,6 @@ Student::Student(std::string _name, double _avgScore, bool _contractPlace) : Per
 	this->contractPlace = _contractPlace;
 }
 
-// ---------------------- Student ---------------------- 
 double Student::getAvgScore()
 {
 	return this->avgScore;
@@ -277,13 +277,6 @@ ParseData::ParseData(std::string dirName) : InputData(dirName)
 	this->totalLine = 0;
 }
 
-//void parseData::removeRecord()
-//{
-//	this->totalLine -= 1;
-//	this->students.pop_back();
-//	return;
-//}
-
 int ParseData::getTotalLine()
 {
 	return this->totalLine;
@@ -315,7 +308,7 @@ std::vector<Student*> ParseData::getStudents(Validator& validator)
 
 
 		std::string line;
-		int beforeErrorAmount = validator.getErrors().size();
+		int beforeErrorsAmount = validator.getErrors().size();
 		for (int j = 0; j < this->lineCount; ++j)
 		{
 			std::getline(input, line);
@@ -323,13 +316,10 @@ std::vector<Student*> ParseData::getStudents(Validator& validator)
 			validator.setCurrentLine(j + 2);
 			validator.validate(line);
 		}
-		int afterErrorAmount = validator.getErrors().size();
-		input.close();
+		int afterErrorsAmount = validator.getErrors().size();
+		input.seekg(0, std::ios::beg);
 
-		if (beforeErrorAmount == afterErrorAmount) {
-			std::ifstream input;
-			input.open(this->fileName);
-
+		if (beforeErrorsAmount == afterErrorsAmount) {
 			input >> this->lineCount;
 			input.get();
 
@@ -351,6 +341,8 @@ std::vector<Student*> ParseData::getStudents(Validator& validator)
 
 	return students;
 }
+
+// ----------------------------- Validator ----------------------------- 
 
 void Validator::validate(std::string line)
 {
@@ -416,6 +408,8 @@ void Validator::setCurrentLine(int val)
 	this->currentLine = val;
 }
 
+
+// ------------------------------ ParseError ------------------------------
 ParseError::ParseError(std::string fileName, int lineIndex, std::string columnName)
 {
 	this->fileName = fileName;

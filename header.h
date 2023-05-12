@@ -150,7 +150,6 @@ private:
 	int totalLine;
 	std::string fileName;
 	void parseLineOfStudent(std::string, std::vector<Student*>&);
-	void removeRecord();	 // Дороби метод, зараз він не працює
 
 public:
 	ParseData();

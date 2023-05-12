@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 
 		//std::cout << table.getScolarshipStudents() << std::endl;
 		std::cout << validator << std::endl;
-		std::cout << studentsFromAllFiles << std::endl;
+		//std::cout << studentsFromAllFiles << std::endl;
 	}
 	catch (std::range_error err) {
 		std::cout << err.what() << std::endl;
